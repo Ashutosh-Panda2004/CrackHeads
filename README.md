@@ -155,3 +155,404 @@ int main() {
 By using smart pointers, C++ provides a way to avoid manual memory management pitfalls similar to what a garbage collector does in other languages.
 
 ---
+
+The main difference between the **public** and **protected** access modifiers in C++ relates to how members of the class are accessed outside of the class and in derived classes:
+
+1. **Public Access Modifier**:
+   - Members declared as `public` are accessible from **outside** the class and by **derived classes**.
+   - They are freely accessible wherever the object of the class is available.
+
+2. **Protected Access Modifier**:
+   - Members declared as `protected` are **not accessible outside** the class directly, but they are accessible in **derived classes**.
+   - This allows derived classes to access and modify these members, but they remain hidden from other parts of the code.
+
+### Code Example: Understanding Public vs. Protected
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Base {
+public:
+    int publicVar;          // Public member
+protected:
+    int protectedVar;       // Protected member
+private:
+    int privateVar;         // Private member (for completeness, not accessible in Derived)
+};
+
+// Derived class inheriting publicly
+class Derived : public Base {
+public:
+    void show() {
+        publicVar = 10;      // Accessible (inherited as public)
+        protectedVar = 20;   // Accessible (inherited as protected)
+        // privateVar = 30;  // Not accessible (private members are not inherited)
+    }
+};
+
+int main() {
+    Derived d;
+    d.publicVar = 15;  // Accessible directly because it's public in Base
+    // d.protectedVar = 25; // Not accessible directly because it's protected in Base
+
+    cout << "Public Variable: " << d.publicVar << endl;
+    // cout << "Protected Variable: " << d.protectedVar << endl; // This will cause a compile-time error
+
+    return 0;
+}
+```
+
+### Explanation
+
+1. **Public Member (`publicVar`)**:
+   - In the `Base` class, `publicVar` is declared as `public`.
+   - In the `Derived` class, it remains **public** when inherited (because of public inheritance).
+   - In `main()`, we can access and modify `publicVar` directly through an object of the `Derived` class (`d.publicVar = 15;`), showing that it is accessible from outside the class.
+
+2. **Protected Member (`protectedVar`)**:
+   - In the `Base` class, `protectedVar` is declared as `protected`.
+   - In the `Derived` class, it is accessible because protected members are inherited, but it remains **protected**.
+   - However, in `main()`, we cannot access `protectedVar` directly through an object of the `Derived` class (`d.protectedVar = 25;` would cause an error). This shows that **protected members are only accessible within the class itself or derived classes**, not outside.
+
+### Summary
+- **Public**: Accessible **everywhere** (inside the class, in derived classes, and outside the class via an object).
+- **Protected**: Accessible **only within the class and its derived classes**, but **not outside** the class, even when using an object.
+
+This allows `protected` members to be modified and controlled by derived classes without exposing them directly to external code, providing more encapsulation than `public` members.
+
+---
+
+In single-level inheritance, the access specifiers (`public`, `protected`, and `private`) determine how the members of the base class are accessible in the derived class. Here's how these access specifiers work in single-level inheritance and all possible variations:
+
+### Variations of Single-Level Inheritance Based on Access Specifiers
+
+In C++, you can derive a class using one of these access specifiers:
+1. **Public Inheritance** (`public` inheritance)
+2. **Protected Inheritance** (`protected` inheritance)
+3. **Private Inheritance** (`private` inheritance)
+
+### 1. **Public Inheritance**
+When a class is derived publicly, the members of the base class retain their access levels in the derived class:
+- **Public members** of the base class remain **public** in the derived class.
+- **Protected members** of the base class remain **protected** in the derived class.
+- **Private members** of the base class are **not accessible** directly in the derived class.
+
+**Code Example:**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+// Derived class with public inheritance
+class Derived : public Base {
+public:
+    void show() {
+        publicVar = 10;      // Accessible
+        protectedVar = 20;   // Accessible
+        // privateVar = 30;  // Not accessible (private members are not inherited)
+    }
+};
+
+int main() {
+    Derived d;
+    d.publicVar = 15;  // Accessible (public in Derived)
+    // d.protectedVar = 25; // Not accessible (protected in Derived)
+    return 0;
+}
+```
+
+### 2. **Protected Inheritance**
+When a class is derived using `protected`, the access levels are modified:
+- **Public members** of the base class become **protected** in the derived class.
+- **Protected members** of the base class remain **protected** in the derived class.
+- **Private members** of the base class are **not accessible** directly in the derived class.
+
+**Code Example:**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+// Derived class with protected inheritance
+class Derived : protected Base {
+public:
+    void show() {
+        publicVar = 10;      // Accessible (now protected in Derived)
+        protectedVar = 20;   // Accessible
+        // privateVar = 30;  // Not accessible (private members are not inherited)
+    }
+};
+
+int main() {
+    Derived d;
+    // d.publicVar = 15; // Not accessible (now protected in Derived)
+    // d.protectedVar = 25; // Not accessible (protected in Derived)
+    return 0;
+}
+```
+
+### 3. **Private Inheritance**
+When a class is derived using `private`, all members of the base class become **private** in the derived class:
+- **Public members** of the base class become **private** in the derived class.
+- **Protected members** of the base class become **private** in the derived class.
+- **Private members** of the base class are **not accessible** directly in the derived class.
+
+**Code Example:**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+// Derived class with private inheritance
+class Derived : private Base {
+public:
+    void show() {
+        publicVar = 10;      // Accessible (now private in Derived)
+        protectedVar = 20;   // Accessible (now private in Derived)
+        // privateVar = 30;  // Not accessible (private members are not inherited)
+    }
+};
+
+int main() {
+    Derived d;
+    // d.publicVar = 15; // Not accessible (private in Derived)
+    // d.protectedVar = 25; // Not accessible (private in Derived)
+    return 0;
+}
+```
+
+### Summary Table of Access Specifier Effects
+
+| Access Specifier in Base Class | Public Inheritance | Protected Inheritance | Private Inheritance |
+|--------------------------------|--------------------|-----------------------|---------------------|
+| Public                         | Public             | Protected             | Private             |
+| Protected                      | Protected          | Protected             | Private             |
+| Private                        | Not Accessible     | Not Accessible        | Not Accessible      |
+
+### Conclusion
+The type of inheritance (`public`, `protected`, or `private`) controls how the members of the base class are inherited by the derived class. By choosing the appropriate inheritance type, you can control the visibility and accessibility of the base class members in the derived class, allowing for different levels of encapsulation and data protection.
+
+---
+
+**Inheritance** in C++ is a mechanism that allows a class (called the **derived** or **child class**) to inherit properties and behavior (data members and member functions) from another class (called the **base** or **parent class**). It promotes code reusability and establishes a relationship between classes. 
+
+### Types of Inheritance
+C++ supports several types of inheritance:
+1. **Single Inheritance**: A class inherits from one base class.
+2. **Multiple Inheritance**: A class inherits from more than one base class.
+3. **Multilevel Inheritance**: A class is derived from another derived class.
+4. **Hierarchical Inheritance**: Multiple classes inherit from a single base class.
+5. **Hybrid Inheritance**: A combination of two or more of the above types.
+
+Here's how inheritance works in C++ using different examples:
+
+### 1. Single Inheritance
+In single inheritance, a class derives from a single base class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "Eating..." << endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "Barking..." << endl;
+    }
+};
+
+int main() {
+    Dog d;
+    d.eat();  // Inherited from Animal
+    d.bark(); // Defined in Dog
+    return 0;
+}
+```
+
+**Explanation**:
+- `Animal` is the base class with a method `eat`.
+- `Dog` is the derived class that inherits from `Animal` using the `public` access specifier. It can access `eat` as if it were its own method.
+
+### 2. Multilevel Inheritance
+In multilevel inheritance, a class is derived from another derived class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "Eating..." << endl;
+    }
+};
+
+// Intermediate derived class
+class Mammal : public Animal {
+public:
+    void breathe() {
+        cout << "Breathing..." << endl;
+    }
+};
+
+// Final derived class
+class Dog : public Mammal {
+public:
+    void bark() {
+        cout << "Barking..." << endl;
+    }
+};
+
+int main() {
+    Dog d;
+    d.eat();      // Inherited from Animal
+    d.breathe();  // Inherited from Mammal
+    d.bark();     // Defined in Dog
+    return 0;
+}
+```
+
+**Explanation**:
+- `Mammal` is derived from `Animal`.
+- `Dog` is derived from `Mammal`, so it inherits all the members of both `Animal` and `Mammal`.
+
+### 3. Multiple Inheritance
+In multiple inheritance, a class can inherit from more than one base class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class 1
+class Animal {
+public:
+    void eat() {
+        cout << "Eating..." << endl;
+    }
+};
+
+// Base class 2
+class Pet {
+public:
+    void beFriendly() {
+        cout << "Being friendly..." << endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal, public Pet {
+public:
+    void bark() {
+        cout << "Barking..." << endl;
+    }
+};
+
+int main() {
+    Dog d;
+    d.eat();        // Inherited from Animal
+    d.beFriendly(); // Inherited from Pet
+    d.bark();       // Defined in Dog
+    return 0;
+}
+```
+
+**Explanation**:
+- `Dog` inherits from both `Animal` and `Pet`. It can access members from both classes and its own.
+
+### 4. Hierarchical Inheritance
+In hierarchical inheritance, multiple classes derive from a single base class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "Eating..." << endl;
+    }
+};
+
+// Derived class 1
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "Barking..." << endl;
+    }
+};
+
+// Derived class 2
+class Cat : public Animal {
+public:
+    void meow() {
+        cout << "Meowing..." << endl;
+    }
+};
+
+int main() {
+    Dog d;
+    Cat c;
+    
+    d.eat();   // Inherited from Animal
+    d.bark();  // Defined in Dog
+
+    c.eat();   // Inherited from Animal
+    c.meow();  // Defined in Cat
+
+    return 0;
+}
+```
+
+**Explanation**:
+- Both `Dog` and `Cat` inherit from the same base class `Animal`. They share common behavior (`eat`) but also have their own unique behaviors (`bark` and `meow`).
+
+### Summary
+- Inheritance allows code reuse and establishes a relationship between classes.
+- Access specifiers (`public`, `protected`, and `private`) determine how members of the base class are accessible in the derived class.
+- C++ does not support multiple inheritance if it leads to ambiguity, but it provides ways to resolve conflicts (e.g., using virtual inheritance).
+
+Inheritance is a fundamental concept in object-oriented programming that enables building complex systems efficiently by extending existing classes.
+
+---
