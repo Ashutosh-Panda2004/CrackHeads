@@ -76,3 +76,48 @@ There are situations where appending to the end of the list when an invalid posi
   - Systems that require precise ordering or validation, such as financial systems, logging mechanisms, form validation in web apps, or applications where data consistency is critical.
 
 By understanding the context and the application’s requirements, you can determine whether appending a node at the end when a large position is given is appropriate or should be handled differently.
+
+---
+
+The difference in the size of the `Animal` class in the two examples is due to **memory alignment and padding** in C++. Let's break down why this happens.
+
+### Example 1:
+```cpp
+class Animal {
+    int age;
+    int weight;
+};
+```
+
+- Each `int` typically takes **4 bytes**.
+- Since there are two `int` variables (`age` and `weight`), the total size without any padding would be **8 bytes** (4 bytes + 4 bytes).
+
+Here, the size of the `Animal` class is **8 bytes**, as expected, because there's no need for additional padding—both `int` variables align perfectly.
+
+### Example 2:
+```cpp
+class Animal {
+    int age;
+    int weight;
+    char ch;
+};
+```
+
+- The two `int` variables (`age` and `weight`) each take **4 bytes**, so together they take up **8 bytes**.
+- The `char` variable (`ch`) takes **1 byte**.
+
+However, to maintain alignment (especially on a 4-byte or 8-byte boundary, which is common for memory access efficiency), the compiler adds **3 bytes of padding** after the `char` variable. This is done so that the next object of this type in memory will be aligned properly.
+
+Thus, the size breakdown looks like this:
+- `int age`: 4 bytes
+- `int weight`: 4 bytes
+- `char ch`: 1 byte
+- **Padding**: 3 bytes
+
+This brings the total size to **12 bytes**.
+
+### Why Padding Occurs
+Padding occurs because modern processors access memory more efficiently when data is aligned to specific boundaries (e.g., 4-byte or 8-byte boundaries). If the data is not aligned, it can result in slower memory access or additional overhead for the processor.
+
+### Summary
+- The class in Example 2 is **12 bytes** because the compiler inserts **3 bytes of padding** after the `char` to maintain proper alignment, ensuring that any subsequent object of the `Animal` type will start at an address that is a multiple of 4 bytes.
