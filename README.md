@@ -121,3 +121,37 @@ Padding occurs because modern processors access memory more efficiently when dat
 
 ### Summary
 - The class in Example 2 is **12 bytes** because the compiler inserts **3 bytes of padding** after the `char` to maintain proper alignment, ensuring that any subsequent object of the `Animal` type will start at an address that is a multiple of 4 bytes.
+
+---
+In C++, memory management is done manually, meaning that developers have direct control over allocating and deallocating memory. Here's what "Memory Leak" and "Garbage Collector" mean in this context:
+
+### Memory Leak
+A **memory leak** occurs when a program allocates memory dynamically using pointers (typically with `new` or `malloc`) but fails to release that memory after it is no longer needed. As a result, the allocated memory remains inaccessible and unavailable for further use, leading to inefficient memory usage. Over time, this can consume all available memory, causing the program or even the system to crash or become unresponsive.
+
+For example:
+```cpp
+int* ptr = new int[100];
+// ... some operations
+// Forgot to delete the allocated memory
+```
+In the code above, if `delete[] ptr;` is not called before the end of the scope, the allocated memory for `ptr` is not released, resulting in a memory leak.
+
+### Garbage Collector
+Unlike languages like Java or Python, C++ **does not have a built-in garbage collector** to automatically manage memory. Instead, C++ developers must explicitly manage memory allocation and deallocation using `new` and `delete` (or `malloc` and `free`). A garbage collector is a system that automatically tracks allocated memory and frees it when it is no longer in use, which is not the default behavior in C++.
+
+However, modern C++ (from C++11 onward) introduces **smart pointers** (e.g., `std::unique_ptr`, `std::shared_ptr`, and `std::weak_ptr`) which help manage memory automatically. Smart pointers are a form of resource management that ensures memory is deallocated automatically when the pointer goes out of scope, reducing the risk of memory leaks.
+
+For example:
+```cpp
+#include <memory>
+
+int main() {
+    std::unique_ptr<int[]> ptr(new int[100]);
+    // No need to manually delete ptr; it will be automatically deleted
+    // when it goes out of scope.
+}
+```
+
+By using smart pointers, C++ provides a way to avoid manual memory management pitfalls similar to what a garbage collector does in other languages.
+
+---
